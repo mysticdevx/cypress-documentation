@@ -110,61 +110,123 @@ const LoginForm = ({ onLogin, title = 'Log In' }) => {
 </code-block>
 </code-group>
 
-## Add a spec file
+## Adding your first spec file
 
 Assuming you've successfully
 [installed the Test Runner](/guides/getting-started/installing-cypress#Installing)
 and
 [opened the Cypress app](/guides/getting-started/installing-cypress#Opening-Cypress),
-now it's time to write your first test.
+now it's time to add your first spec file.
 
 In order to test any component, there needs to be a corresponding spec file.
 Just like the component file is used by the application to render the component,
 the spec file is used by Cypress to test the component.
 
-### Spec file naming
+### Naming the spec file
 
-Components are typically written in a modular fashion, existing alongside their
-styles and other related files, in the same folder.
+Components are typically written in a modular fashion, with code, styling and
+spec files existing alongside one another in the same folder.
 
 Spec files should be named similarly to the component file being tested, but
-will need to have a different file extension so that Cypress can find them
-automatically. By default, this extension is either `.cy.js`, `.cy.jsx`,
-`.cy.ts`, or `.cy.tsx`. For example, for a component file named `LoginForm.jsx`,
-you'd create a corresponding spec file called `LoginForm.cy.jsx`.
+need to have a slightly different file extension so that Cypress can find and
+load them automatically. By default, this extension is either `.cy.js`,
+`.cy.jsx`, `.cy.ts`, or `.cy.tsx`. For example, for a component file named
+`LoginForm.jsx`, you'd create a corresponding spec file called
+`LoginForm.cy.jsx`.
 
 Note that you can change the
 [`testFiles`](/guides/references/configuration#component) configuration option
 to customize how Cypress looks for spec files.
 
-CALLOUT:
+### Creating the spec file
 
 Now, create the `LoginForm.cy.jsx` spec file next to the `LoginForm.jsx`
-component file. You should see the Cypress app update to show the newly-created
-file in its list of specs. Once you've done that, select the file. Cypress will
-tell you that no tests could be found, which is to be expected.
+component file. Assuming that the Cypress app is running, you should see it
+update to show the newly-created file in its list of specs.
 
-### Spec file contents
+(SCREENSHOT OF SPEC FILE LIST)
+
+Now select the spec file. Cypress will tell you that no tests could be found,
+which is to be expected, since we haven't yet written any tests.
+
+(SCREENSHOT OF SELECTED SPEC WITH NO TESTS MESSAGE)
+
+Now that we've created our first spec file, and have confirmed that Cypress
+detects it, let's proceed to writing our first test.
+
+(short troubleshooting guide here)
+
+## Writing your first test
 
 Spec files contain one or more tests, which each contain one or more assertions.
-Tests are often grouped into blocks.
-
-#### Creating a "hello world" test
+Tests are often grouped with similar or related tests.
 
 All tests are written as an `it()` function call. In its most basic form, the
-`it` function accepts two arguments:
+`it()` function accepts two arguments:
 
-- The first argument is a string which serves as the name of the test. This
-  string will appear in the test runner so that you can easily differentiate one
-  test's results from another.
-- The second argument is the test function. Assertions and other setup code go
-  inside the test function.
+- The first argument is a string, known as the test name. This string will
+  appear in the test runner so that you can easily see per-test results and
+  differentiate between the results of multiple tests.
+- The second argument is the test function, also called the test body.
+  Assertions and other setup code are written inside the test body.
 
-Here's a test that's about as simple as a test can possibly be. The test name is
-`'should work'`, and the test function contains one assertion,
-`expect(true).to.equal(true)`. While this assertion doesn't really provide much
-value, it will at least tell us that Cypress is correctly loading and executing
-the spec file.
+<Alert type="info">
+
+[Assertions](/guides/references/assertions) are conditions that must succeed in
+order for our tests to pass, and usually consist of code that compares something
+observed in the component (often referred to as the "actual" value) to a known
+"expected" value that is coded into the test.
+
+Usually, assertions are written so that the actual value comes first, followed
+by the expected value. For example:
+
+```js
+expect(actualValue).to.equal(expectedValue)
+```
+
+For more information, see the [Assertions guide](/guides/references/assertions).
+
+</Alert>
+
+### The "hello world" test
+
+Here's a test which is about as simple as a test can possibly be: The test has a
+name and a test body containing one assertion. While this assertion doesn't help
+us test our component, it will at least show us that Cypress is correctly
+loading and executing the tests in the spec file.
+
+Add this test to your spec file, and save it:
+
+```js
+it('should work', () => {
+  expect(false).to.equal(true)
+})
+```
+
+If everything is working as-expected, as soon as you save your spec file,
+Cypress should load the spec file and re-run all the tests in it.
+
+<Alert type="info">
+
+Cypress automatically reloads and re-runs all tests in a spec file when it
+detects changes to that file or in any files loaded into the spec file with
+`import` or `require`.
+
+</Alert>
+
+In this case, because we've written a failing test, we should see a red X next
+to the test name, along with a failing assertion of
+`expected false to equal true` in the test body, and a few options for getting
+more information about the failing test.
+
+(SCREENSHOT OF FAILING HELLO WORLD TEST)
+
+### Updating a failing test
+
+Normally, we write assertions that we expect to pass, and refactor our code
+whenever we see an error. However, in this case, the test needs to be refactored
+in order for it to pass. Change your existing "should work" test to this, and
+save the spec file:
 
 ```js
 it('should work', () => {
@@ -172,49 +234,198 @@ it('should work', () => {
 })
 ```
 
-```js
-describe('LoginForm', () => {
-  it('should work', () => {
-    expect(true).to.equal(true)
-  })
-})
-```
+Now, the test should pass, and should have a green check mark next to the test
+name, along with a passing assertion of `expected true to equal true` in the
+test body.
 
-### Run the spec file
+(SCREENSHOT OF PASSING HELLO WORLD TEST)
 
-- explain that if cypress was already running, how the newly created spec file
-  would just appear in the list
-- explain how to run cypress if not already running
+Congratulations! You've written your first test using Cypress component testing.
+Now let's write some meaningful component tests.
 
-## Write your first test
+## Testing components
 
 - explain general component testing approach
 
+### Setting up imports
+
+In order to test components, we're going to need to import two things into our
+spec file: a function to mount our component, and the component itself.
+
+Different frameworks render their components differently, so we provide
+framework-specific `mount()` functions, which can be imported like so:
+
+<code-group>
+<code-block label="React" active>
+
+```js
+import { mount } from '@cypress/react'
+```
+
+</code-block>
+<code-block label="Vue">
+
+```js
+import { mount } from '@cypress/vue'
+```
+
+</code-block>
+</code-group>
+
+Because our example `LoginForm` component is exported as a named export, we will
+import it into our spec file like so (if the component was a default export, we
+would omit the `{}` curly braces):
+
+```js
+import { LoginForm } from './LoginForm'
+```
+
+### Mounting the component
+
+Now that both the `mount()` function and the component have been imported, we
+can write our first component test.
+
+Replace the contents of your spec file with this, and then save it:
+
+<code-group>
+<code-block label="React" active>
+
+```js
+import { mount } from '@cypress/react'
+import { LoginForm } from './LoginForm'
+
+it('should mount the component', () => {
+  mount(<LoginForm />)
+})
+```
+
+</code-block>
+<code-block label="Vue">
+
+```js
+import { mount } from '@cypress/vue'
+import { LoginForm } from './LoginForm'
+
+it('should mount the component', () => {
+  mount(<LoginForm />)
+})
+```
+
+</code-block>
+</code-group>
+
+Just like in the previous section, we should see one passing test. However, this
+time, because we're mounting a component, we should also see the component
+rendering in the Cypress app.
+
+(SCREENSHOT OF CYPRESS APP WITH MOUNTED COMPONENT)
+
+(short troubleshooting guide here ?)
+
+(link to mount docs ?)
+
+(mention getting components to work / render correctly ?)
+
+### Testing the DOM
+
+Mounting a component in a test can be useful as a baseline assertion that a
+component doesn't error when mounted. However, we'll usually want to assert
+other, more specific, things about the component.
+
+#### Writing smart tests
+
+How can we assert that the password field has a `type` attribute of `password`,
+so we can be sure that the password is concealed as the user enters it?
+
+The [`cy.get()`](/api/commands/get) command both gets a DOM element from the
+rendered component, and implicitly asserts that it was found. So, we could do
+this to assert that there is an `input` element with a `type` attribute of
+`password`:
+
+```js
+it('should have password input', () => {
+  mount(<LoginForm />)
+  cy.get('input[type="password"]')
+})
+```
+
+However, this only asserts that there is an `input` element with a `type`
+attribute of `password` somewhere in the rendered component, which would give us
+false confidence that our component was working as-intended in the case where we
+accidentally swapped the username and password fields.
+
+Instead of trying to get the password field in a programmer-centric way, let's
+get the password field in a user-centric way. Instead of getting the `input`
+element by its attributes, let's get the `label` element by its text using
+[`cy.contains()`](/api/commands/contains) and then use
+[`cy.find()`](/api/commands/find) to find the descendant `input` element
+underneath it, which we will then assert has a `type` attribute of `password`
+using [`.should()`](/api/commands/should).
+
+After your last test, add this test and save the spec file:
+
+```js
+it('should have password input of type password', () => {
+  mount(<LoginForm />)
+  cy.contains('Password').find('input').should('have.attr', 'type', 'password')
+})
+```
+
+There are a few things about the Cypress UI to note:
+
+- When there's more than one test, each passing test listed in the Cypress UI
+  will be collapsed by default. You can click any of them to show more details.
+- Hovering over commands like `mount`, `contains` or `find` in the expanded test
+  details should highlight the relevant elements in the rendered component.
+
+### Testing props
+
+Let's assert that the default value of the `title` prop is being rendered
+properly, by using the [`cy.get()`](/api/commands/get) command to get the
+`legend` element from the rendered output, and by using the
+[`.should()`](/api/commands/should) command to assert that the element's text is
+equal to expected default value of "Log In".
+
+After your last test, add this test and save the spec file:
+
+```js
+it('should render title with default text', () => {
+  mount(<LoginForm />)
+  cy.get('legend').should('have.text', 'Log In')
+})
+```
+
+Asserting that a custom prop value is being rendered properly should also work
+the same way. Using JSX, we can specify any props to our component. For example,
+let's assert that a custom value for the `title` prop is being rendered
+properly.
+
+After your last test, add this test and save the spec file:
+
+```js
+it('should render title with specified text', () => {
+  const title = 'Please Authenticate'
+  mount(<LoginForm title={title} />)
+  cy.get('legend').should('have.text', title)
+})
+```
+
+There are a few things about the Cypress UI to note:
+
+- The rendered component always shows the state of the last-run test. Because
+  our last test changed the title, that's what we should see now.
+- Hovering over commands like `mount`, `contains`, `find` or `get` in the
+  expanded test details always shows the state of the rendered component at the
+  time that command was run. We call this feature [Time travel](#Time-travel).
+
+(note about alternatives to JSX, like how mount works with vue with a component
+and an options object?)
+
 ### Test organization
 
-- explain it() and describe()
+Before writing any more tests, we should talk about test organization.
 
-### Mount the component
-
-- talk about the mount command
-- mention the cy.mount page
-- import the mount command
-- import the component
-- create a basic test just mounting the component
-- note about rendering issues, link to the "Troubleshooting" section in this
-  page
-
-### Assert that the component renders properly
-
-- talk about querying the DOM of a rendered component
-- test: should show default `title` when none is specified
-- show the test failing
-
-### Assert that props work
-
-- talk about passing props into mount
-- mention other mount options (??)
-- test: should show specified `title`
+- explain describe()
 
 ### Assert user interactions
 
@@ -282,57 +493,3 @@ describe('LoginForm', () => {
 ### Special commands
 
 ## Next Steps
-
-=======================================================
-
-# OLD CONTENT
-
-=======================================================
-
-## Add a spec file
-
-Assuming you've successfully
-[installed the Test Runner](/guides/getting-started/installing-cypress#Installing)
-and
-[opened the Cypress app](/guides/getting-started/installing-cypress#Opening-Cypress),
-now it's time to add a spec file and write our first test. We're going to:
-
-1. Select a component to test.
-2. Create a spec file.
-3. Watch Cypress update the list of spec files.
-4. Run the spec file.
-
-### Create a spec file
-
-Let's create a new file in the same folder in which your component lives. In
-this case, if your component is `src/Button.jsx`, you'll create a spec file next
-to it named `Button.cy.jsx`. From the root of your project, do this:
-
-```shell
-touch src/Button.cy.jsx
-```
-
-## Write your first test
-
-## Write a real test
-
-## Misc
-
-<Alert type="info">
-
-## Spec file naming
-
-Components are typically written in a modular fashion, existing alongside their
-styles and other related files, in the same folder.
-
-Spec files should be named similarly to the component file being tested, but
-will need to have a different file extension so that Cypress can find them
-automatically. By default, this extension is either `.cy.js`, `.cy.jsx`,
-`.cy.ts`, or `.cy.tsx`. For example, for a component file named `Button.jsx`,
-you'd create a corresponding spec file called `Button.cy.jsx`.
-
-Note that you can change the
-[`testFiles`](/guides/references/configuration#component) configuration option
-to customize how Cypress looks for spec files.
-
-</Alert>

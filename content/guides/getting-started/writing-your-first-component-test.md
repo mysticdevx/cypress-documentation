@@ -2,6 +2,7 @@
 title: Writing Your First Component Test
 ---
 
+<!--
 <Alert type="info">
 
 ## <Icon name="graduation-cap"></Icon> What you'll learn
@@ -13,6 +14,8 @@ title: Writing Your First Component Test
 - How to use the Cypress UI to help debug test results.
 
 </Alert>
+
+-->
 
 In order to get the most out of this guide, we recommend that you follow along
 by cloning the
@@ -412,8 +415,9 @@ it('should render title with specified text', () => {
 
 There are a few things about the Cypress UI to note:
 
-- The rendered component always shows the state of the last-run test. Because
-  our last test changed the title, that's what we should see now.
+- By default, the rendered component shows the state of the last-run test.
+  Because our last test changed the title, we should currently see that
+  reflected in the rendered component.
 - Hovering over commands like `mount`, `contains`, `find` or `get` in the
   expanded test details always shows the state of the rendered component at the
   time that command was run. We call this feature [Time travel](#Time-travel).

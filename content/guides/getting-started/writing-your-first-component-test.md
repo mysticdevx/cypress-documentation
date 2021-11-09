@@ -33,9 +33,10 @@ examples?)
 
 ## The example component
 
-We're going to be testing a `LoginForm` component. This component is similar to
-many of the components you will be testing in your application, in that it
-accepts props and renders elements into the DOM that a user can interact with.
+In this guide, we'll be testing a `LoginForm` component. This component is
+similar to many of the components you will be testing in your application, in
+that it accepts props and renders elements into the DOM that a user can interact
+with.
 
 More specifically, the `LoginForm` component:
 
@@ -116,9 +117,9 @@ const LoginForm = ({ onLogin, title = 'Log In' }) => {
 ## Adding your first spec file
 
 Assuming you've successfully
-[installed the Test Runner](/guides/getting-started/installing-cypress#Installing)
+[installed the Cypress app](/guides/getting-started/installing-cypress#Installing)
 and
-[opened the Cypress app](/guides/getting-started/installing-cypress#Opening-Cypress),
+[configured your framework](/guides/getting-started/component-framework-configuration),
 now it's time to add your first spec file.
 
 In order to test any component, there needs to be a corresponding spec file.
@@ -143,9 +144,12 @@ to customize how Cypress looks for spec files.
 
 ### Creating the spec file
 
+If you haven't already done so,
+[open the Cypress app](/guides/getting-started/installing-cypress#Opening-Cypress).
+
 Now, create the `LoginForm.cy.jsx` spec file next to the `LoginForm.jsx`
-component file. Assuming that the Cypress app is running, you should see it
-update to show the newly-created file in its list of specs.
+component file. the Cypress app should update to show the newly-created file in
+its list of specs.
 
 (SCREENSHOT OF SPEC FILE LIST)
 
@@ -154,29 +158,29 @@ which is to be expected, since we haven't yet written any tests.
 
 (SCREENSHOT OF SELECTED SPEC WITH NO TESTS MESSAGE)
 
-Now that we've created our first spec file, and have confirmed that Cypress
-detects it, let's proceed to writing our first test.
-
-(short troubleshooting guide here)
+Now that we've created our first spec file and have confirmed that Cypress can
+load it, let's write our first test.
 
 ## Writing your first test
 
 Spec files contain one or more tests, which each contain one or more assertions.
-Tests are often grouped with similar or related tests.
 
-All tests are written as an `it()` function call. In its most basic form, the
-`it()` function accepts two arguments:
+### Using the `it()` function
+
+All tests are written as an `it()` function call, which Cypress provides as a
+global for use in your spec files. In its most basic form, the `it()` function
+accepts two arguments:
 
 - The first argument is a string, known as the test name. This string will
-  appear in the test runner so that you can easily see per-test results and
+  appear in the Cypress app so that you can easily see per-test results and
   differentiate between the results of multiple tests.
-- The second argument is the test function, also called the test body.
+- The second argument is the test function, also called the "test body."
   Assertions and other setup code are written inside the test body.
 
 <Alert type="info">
 
 [Assertions](/guides/references/assertions) are conditions that must succeed in
-order for our tests to pass, and usually consist of code that compares something
+order for tests to pass, and usually consist of code that compares something
 observed in the component (often referred to as the "actual" value) to a known
 "expected" value that is coded into the test.
 
@@ -193,10 +197,13 @@ For more information, see the [Assertions guide](/guides/references/assertions).
 
 ### The "hello world" test
 
-Here's a test which is about as simple as a test can possibly be: The test has a
-name and a test body containing one assertion. While this assertion doesn't help
-us test our component, it will at least show us that Cypress is correctly
-loading and executing the tests in the spec file.
+This test is about as simple as a test can possibly be: It has a name and a test
+body containing a single assertion. While this assertion doesn't help us test
+our component, it will at least show us that Cypress is correctly loading and
+executing the tests in the spec file, and will help us get more familiar with
+the Cypress app.
+
+First, let's start with a failing test.
 
 Add this test to your spec file, and save it:
 
@@ -227,9 +234,9 @@ more information about the failing test.
 ### Updating a failing test
 
 Normally, we write assertions that we expect to pass, and refactor our code
-whenever we see an error. However, in this case, the test needs to be refactored
-in order for it to pass. Change your existing "should work" test to this, and
-save the spec file:
+whenever we see an error. However, in this case, the test itself needs to be
+refactored in order for it to pass. Change your existing "should work" test to
+this, and save the spec file:
 
 ```js
 it('should work', () => {
@@ -276,8 +283,8 @@ import { mount } from '@cypress/vue'
 </code-group>
 
 Because our example `LoginForm` component is exported as a named export, we will
-import it into our spec file like so (if the component was a default export, we
-would omit the `{}` curly braces):
+import it into our spec file like so (if the component was exported as a default
+export, we would omit the `{}` curly braces):
 
 ```js
 import { LoginForm } from './LoginForm'
@@ -323,19 +330,22 @@ rendering in the Cypress app.
 
 (SCREENSHOT OF CYPRESS APP WITH MOUNTED COMPONENT)
 
-(short troubleshooting guide here ?)
-
 (link to mount docs ?)
 
 (mention getting components to work / render correctly ?)
 
-### Testing the DOM
+### React, Vue and JSX
+
+(explain how JS and JSX are supported in Cypress component tests, and how Vue
+template syntax is not supported, but how the mount command will work with both)
+
+## Testing the DOM
 
 Mounting a component in a test can be useful as a baseline assertion that a
-component doesn't error when mounted. However, we'll usually want to assert
-other, more specific, things about the component.
+component doesn't error when mounted. However, we'll usually want to assert more
+specific things about the component.
 
-#### Writing smart tests
+### Writing smart tests
 
 How can we assert that the password field has a `type` attribute of `password`,
 so we can be sure that the password is concealed as the user enters it?
@@ -381,7 +391,7 @@ There are a few things about the Cypress UI to note:
 - Hovering over commands like `mount`, `contains` or `find` in the expanded test
   details should highlight the relevant elements in the rendered component.
 
-### Testing props
+## Testing props
 
 Let's assert that the default value of the `title` prop is being rendered
 properly, by using the [`cy.get()`](/api/commands/get) command to get the
@@ -422,16 +432,143 @@ There are a few things about the Cypress UI to note:
   expanded test details always shows the state of the rendered component at the
   time that command was run. We call this feature [Time travel](#Time-travel).
 
-(note about alternatives to JSX, like how mount works with vue with a component
-and an options object?)
-
-### Test organization
+## Organizing tests
 
 Before writing any more tests, we should talk about test organization.
 
-- explain describe()
+Up until now, all of our tests have been written at the top level of the spec
+file. This works for smaller numbers of tests, but as your spec files grow, it
+can be helpful, or even necessary, to provide some
+[structure](/guides/core-concepts/writing-and-organizing-tests#Test-Structure)
+to your spec file.
 
-### Assert user interactions
+### The `describe()` function
+
+Tests can be grouped inside a `describe()` function call, also called a
+"describe block" or just "block," which Cypress provides as a global for use in
+your spec files. In its most basic form, the `describe()` function accepts two
+arguments:
+
+- The first argument is a string. This string will appear in the Cypress app so
+  that you can easily see how multiple tests are grouped.
+- The second argument is a function. Any number of tests or describe blocks can
+  exist inside this function, allowing tests to be organized.
+
+### Top-level grouping
+
+Right now, we have a few tests at the top level of our spec file. Let's put them
+all inside a describe block. While this isn't strictly necessary, it will help
+make the spec file output more clear.
+
+Surround the tests in your spec file with this, and then save it:
+
+```js
+describe('LoginForm', () => {
+  // your tests
+})
+```
+
+Your tests should now look something like this:
+
+```js
+describe('LoginForm', () => {
+  it('should mount the component', () => {
+    mount(<LoginForm />)
+  })
+
+  it('should have password input of type password', () => {
+    mount(<LoginForm />)
+    cy.contains('Password')
+      .find('input')
+      .should('have.attr', 'type', 'password')
+  })
+
+  it('should render title with default text', () => {
+    mount(<LoginForm />)
+    cy.get('legend').should('have.text', 'Log In')
+  })
+
+  it('should render title with specified text', () => {
+    const title = 'Please Authenticate'
+    mount(<LoginForm title={title} />)
+    cy.get('legend').should('have.text', title)
+  })
+})
+```
+
+And the Cypress app should look like this:
+
+(SCREENSHOT OF CYPRESS APP SHOWING TESTS UNDER DESCRIBE BLOCK)
+
+### Nested grouping
+
+We're now going to add a number of tests related to the login form itself.
+However, before we do this, let's add another describe block after all the other
+tests inside the "LoginForm" describe block.
+
+Update your spec file, adding a new "form tests" describe block after all the
+tests in the "LoginForm" block like so, and save it:
+
+```js
+describe('LoginForm', () => {
+  // existing tests
+
+  describe('form tests', () => {
+    // nothing here yet
+  })
+})
+```
+
+The Cypress app should update to show the new describe block, but there won't be
+anything inside it, because we haven't written any tests yet.
+
+## Testing user interactions
+
+intro
+
+### Stubbing functions
+
+Many components accept function props, which allows a component to notify its
+parent whenever a particular event occurs. For example, it may be necessary for
+a parent component to pass an `onClick` function, or "handler," into a child
+`Button` component to allow it to do something whenever the user clicks the
+button.
+
+In order to allow testing components outside their parent, we'll use the
+[`cy.spy()`](/api/commands/spy) command, which creates a function that can be
+passed into a component as a prop, which can be asserted on using
+[`.should()`](/api/commands/should) to see that it was called, and with specific
+arguments.
+
+### Testing a form submit
+
+The next test is going to be a little more involved than the previous tests,
+because it requires a fair amount of setup. In this test we're going to:
+
+1. Create a spy to be passed into the `onLogin` prop
+2. Mount the component, passing in the spy
+3. Find the Username field and type a username into it
+4. Find the Password field and type a password into it
+5. Click the Login button
+6. Assert that the spy was called once
+7. Assert that the spy was called with the specified username and password
+
+TODO: ALL THE THINGS
+
+```js
+it('should call onLogin with username and password when login button is clicked', () => {
+  const onLoginSpy = cy.spy().as('onLoginSpy')
+  mount(<LoginForm onLogin={onLoginSpy} />)
+  cy.contains('Username').find('input').type('testuser123')
+  cy.contains('Password').find('input').type('s3cret')
+  cy.get('button').contains('Login').click()
+  cy.get('@onLoginSpy').should('be.calledOnce')
+  cy.get('@onLoginSpy').should('have.been.calledWith', {
+    username: 'testuser123',
+    password: 's3cret',
+  })
+})
+```
 
 - talk about user interactions
 - talk about stubbing callbacks passed to components as props
@@ -439,6 +576,22 @@ Before writing any more tests, we should talk about test organization.
 - test: should call `onLogin` when submitting by pressing enter in an input
 - test: should pass `username` and `password` into `onLogin` when submit button
   is clicked
+
+### DRYing up tests with test hooks
+
+Not only is `describe()` useful for grouping tests, but it also creates a place
+where you can define
+[test hooks](/guides/core-concepts/writing-and-organizing-tests#Hooks) that are
+relevant to just the tests defined therein.
+
+<Alert type="info">
+
+[Test Hooks](/guides/core-concepts/writing-and-organizing-tests#Hooks) are
+helpful to set conditions that you want to run before a set of tests or before
+each test. They're also helpful to clean up conditions after a set of tests or
+after each test.
+
+</Alert>
 
 ### Assert secondary behaviors
 
@@ -459,6 +612,16 @@ Before writing any more tests, we should talk about test organization.
 - test: visual snapshot with a username and password entered (??)
 
 ## Troubleshooting
+
+specific issues
+
+- spec file doesn't show up in the test runner
+- spec file not loading
+- spec file not automatically updating when it is changed -- ???
+- spec file not working properly
+- spec file not appearing properly
+
+also
 
 - explain some complexities of component testing: functionality-related issues
   vs styling-related issues
@@ -497,3 +660,19 @@ Before writing any more tests, we should talk about test organization.
 ### Special commands
 
 ## Next Steps
+
+## ===
+
+## Notes / Questions
+
+### framework-specifics
+
+vue
+
+- we support js and jsx, but we don't support vue template syntax
+- how do users do vue-specific things like emit?
+- where should global components be registered?
+
+react
+
+- ?

@@ -540,23 +540,57 @@ passed into a component as a prop, which can be asserted on using
 [`.should()`](/api/commands/should) to see that it was called, and with specific
 arguments.
 
-### Testing a form submit
+### Testing form submit
 
-The next test is going to be a little more involved than the previous tests,
-because it requires a fair amount of setup. In this test we're going to:
-
-1. Create a spy to be passed into the `onLogin` prop
-2. Mount the component, passing in the spy
-3. Find the Username field and type a username into it
-4. Find the Password field and type a password into it
-5. Click the Login button
-6. Assert that the spy was called once
-7. Assert that the spy was called with the specified username and password
-
-TODO: ALL THE THINGS
+The next test is going to be a bit more involved than our previous tests,
+because it requires a fair amount of setup. First, let's create a new test
+inside the "form tests" block:
 
 ```js
-it('should call onLogin with username and password when login button is clicked', () => {
+it('should call onLogin with username and password on login', () => {
+  // nothing here yet
+})
+```
+
+Inside the test, we first need to create a spy that we can pass into the
+`LoginForm` component. We're also going to need to refer to the spy later, to
+assert that it was called correctly, so we'll use [`.as()`](/api/commands/as) to
+assign the `onLoginSpy` alias for later use.
+
+(callout: aliases)
+
+After that, we need to mount the component, passing in the spy as the `onLogin`
+prop:
+
+```js
+it('should call onLogin with username and password on login', () => {
+  const onLoginSpy = cy.spy().as('onLoginSpy')
+  mount(<LoginForm onLogin={onLoginSpy} />)
+})
+```
+
+Once the component is mounted inside the test, we need to find the Username
+field and type a username into it, then find the Password field and type a
+password into it, then click the Login button.
+
+```js
+it('should call onLogin with username and password on login', () => {
+  const onLoginSpy = cy.spy().as('onLoginSpy')
+  mount(<LoginForm onLogin={onLoginSpy} />)
+  cy.contains('Username').find('input').type('testuser123')
+  cy.contains('Password').find('input').type('s3cret')
+  cy.get('button').contains('Login').click()
+})
+```
+
+#### 5. Click the Login button
+
+#### 6. Assert that the spy was called once
+
+#### 7. Assert that the spy was called with the specified username and password
+
+```js
+it('should call onLogin with username and password on login', () => {
   const onLoginSpy = cy.spy().as('onLoginSpy')
   mount(<LoginForm onLogin={onLoginSpy} />)
   cy.contains('Username').find('input').type('testuser123')

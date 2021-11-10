@@ -526,28 +526,47 @@ anything inside it, because we haven't written any tests yet.
 
 intro
 
+### Focusing tests
+
+In spec files with many tests, it can be helpful to "focus" a test while writing
+it, so only that test is run and shown in the Cypress app. In order to do so,
+just update your test to use `it.only()` instead of `it()`. Describe blocks can
+also be focused by using `describe.only()` to run only certain groups of tests.
+
+Focusing tests and saving your spec files as you're adding tests and assertions
+can help you catch errors early, which will make debugging easier. Just be sure
+to remove any `.only`s you've added after you've finished writing your tests, so
+the other tests are shown again!
+
+See the guide on
+[Excluding and Including Tests](/guides/core-concepts/writing-and-organizing-tests#Excluding-and-Including-Tests)
+for more examples.
+
 ### Stubbing functions
 
-Many components accept function props, which allows a component to notify its
+Many components accept function props, which allows the component to notify its
 parent whenever a particular event occurs. For example, it may be necessary for
-a parent component to pass an `onClick` function, or "handler," into a child
-`Button` component to allow it to do something whenever the user clicks the
-button.
+a parent component to pass an `onClick` function, also known as a "callback" or
+"handler," into a child `Button` component to allow the parent to do something
+whenever the user clicks the button.
 
 In order to allow testing components outside their parent, we'll use the
 [`cy.spy()`](/api/commands/spy) command, which creates a function that can be
 passed into a component as a prop, which can be asserted on using
-[`.should()`](/api/commands/should) to see that it was called, and with specific
-arguments.
+[`.should()`](/api/commands/should) to see that it was called (or not), or
+called with specific arguments.
 
 ### Testing form submit
 
 The next test is going to be a bit more involved than our previous tests,
-because it requires a fair amount of setup. First, let's create a new test
-inside the "form tests" block:
+because we're going to be entering text into form fields, submitting the form,
+and verifying that a callback is getting called.
+
+First, let's create the new test. Inside the "form tests" block, add this test
+(which we're focusing with `.only` as described above) and save the spec file:
 
 ```js
-it('should call onLogin with username and password on login', () => {
+it.only('should call onLogin with username and password on login', () => {
   // nothing here yet
 })
 ```
@@ -555,26 +574,35 @@ it('should call onLogin with username and password on login', () => {
 Inside the test, we first need to create a spy that we can pass into the
 `LoginForm` component. We're also going to need to refer to the spy later, to
 assert that it was called correctly, so we'll use [`.as()`](/api/commands/as) to
-assign the `onLoginSpy` alias for later use.
+assign the `onLoginSpy` alias for later use and to make it easier to see the spy
+in the Cypress app.
 
-(callout: aliases)
+(callout: aliases ?)
 
-After that, we need to mount the component, passing in the spy as the `onLogin`
-prop:
+After we create the spy, we need to mount the component, passing in the spy as
+the `onLogin` prop.
 
 ```js
-it('should call onLogin with username and password on login', () => {
+it.only('should call onLogin with username and password on login', () => {
   const onLoginSpy = cy.spy().as('onLoginSpy')
   mount(<LoginForm onLogin={onLoginSpy} />)
 })
 ```
 
-Once the component is mounted inside the test, we need to find the Username
-field and type a username into it, then find the Password field and type a
-password into it, then click the Login button.
+In the Cypress app, you should now see that the test details has an expandable
+"Spies / Stubs" panel showing details about the spy, including the alias and
+number of calls.
+
+(SCREENSHOT OF SPIES / STUBS PANEL)
+
+Now that the component is mounted inside the test, we can then instruct Cypress
+to find the Username field and type a username into it, find the Password field
+and type a password into it, and then click the Login button. Note that we're
+using the technique outlined in the [Writing smart tests](#Writing-smart-tests)
+section above to get these form controls.
 
 ```js
-it('should call onLogin with username and password on login', () => {
+it.only('should call onLogin with username and password on login', () => {
   const onLoginSpy = cy.spy().as('onLoginSpy')
   mount(<LoginForm onLogin={onLoginSpy} />)
   cy.contains('Username').find('input').type('testuser123')
@@ -583,20 +611,29 @@ it('should call onLogin with username and password on login', () => {
 })
 ```
 
-#### 5. Click the Login button
+In the Cypress app, you should now see that the rendered component has filled-in
+Username and Password fields, and that all of the Cypress commands are listed
+under the test body. You should also be able to hover over the commands to see
+exactly which element it operated on, and even see before and after states for
+the [`.type()`](/api/commands/type) command.
 
-#### 6. Assert that the spy was called once
+You should also see that the spy was called after the button click, and the
+number of calls has been updated to 1 in the "Spies / Stubs" panel.
 
-#### 7. Assert that the spy was called with the specified username and password
+(SCREENSHOT SHOWING SPIES / STUBS PANEL AND RENDERED COMPONENT)
+
+While visually confirming that the spy was called is helpful, we should actually
+assert this in our test. Let's use the `@onLoginSpy` alias to refer to the spy,
+and assert that it was called with an object with `username` and `password`
+properties containing the values typed into the form.
 
 ```js
-it('should call onLogin with username and password on login', () => {
+it.only('should call onLogin with username and password on login', () => {
   const onLoginSpy = cy.spy().as('onLoginSpy')
   mount(<LoginForm onLogin={onLoginSpy} />)
   cy.contains('Username').find('input').type('testuser123')
   cy.contains('Password').find('input').type('s3cret')
   cy.get('button').contains('Login').click()
-  cy.get('@onLoginSpy').should('be.calledOnce')
   cy.get('@onLoginSpy').should('have.been.calledWith', {
     username: 'testuser123',
     password: 's3cret',
@@ -604,30 +641,129 @@ it('should call onLogin with username and password on login', () => {
 })
 ```
 
-- talk about user interactions
-- talk about stubbing callbacks passed to components as props
-- test: should call `onLogin` when submitting by clicking button
-- test: should call `onLogin` when submitting by pressing enter in an input
-- test: should pass `username` and `password` into `onLogin` when submit button
-  is clicked
+Ok, great. Our test is done!
 
-### DRYing up tests with test hooks
+Now that we've finished writing our test, we can remove the `.only` so that the
+test is no longer focused, and we can see the results from all the other tests
+in the spec file. Remember that you can always view a test's details by clicking
+on the test name in the Cypress app.
 
-Not only is `describe()` useful for grouping tests, but it also creates a place
-where you can define
-[test hooks](/guides/core-concepts/writing-and-organizing-tests#Hooks) that are
-relevant to just the tests defined therein.
+At this point, you know everything you need to know in order to write basic
+component tests with Cypress. However, there are a few more things you should
+consider.
+
+## Using test hooks
+
+<!--
+The last test we wrote had a lot of commands, all of which were necessary. But
+we still need to write other tests where data is entered into the form, the
+Login button is clicked, and something is asserted, and we want to reduce
+unnecessary repetition across tests as much as possible.
+
+Before doing anything, we need to consider the other tests we'll be writing.
+After that, we can figure out what setup code will be shared across all of those
+tests, and then we can refactor the last test we created into something a bit
+smarter.
+-->
+
+In the previous section, we tested that the component "should call onLogin with
+username and password on login", but "on login" is actually too vague. There are
+multiple ways a user can login: they can click the "Login" button, but they can
+also press the "enter" key while typing in an input. We should really have two
+tests:
+
+- it should call onLogin with username and password when the Login button is
+  clicked
+- it should call onLogin with username and password when enter is pressed in an
+  input
+
+If we think about what these two tests will need to do, we can see that most of
+the tests will be identical, with very few differences. Additionally, we still
+need to test the following validation scenarios, which will also require much of
+the same setup code:
+
+- it should show Username and Password validation errors if login is attempted
+  without entering username or password
+- it should show a Password validation error if login is attempted without
+  entering password
+- it should show a Username validation error if login is attempted without
+  entering username
+- it should not show any validation errors before login is attempted
+
+Fortunately, `describe()` is useful both for grouping tests, and also for
+creating a place where we can define test hooks.
 
 <Alert type="info">
 
-[Test Hooks](/guides/core-concepts/writing-and-organizing-tests#Hooks) are
-helpful to set conditions that you want to run before a set of tests or before
-each test. They're also helpful to clean up conditions after a set of tests or
-after each test.
+[Test Hooks](/guides/core-concepts/writing-and-organizing-tests#Hooks) can be
+used to set conditions or perform actions that you want to run before or after
+each test in a spec file or a describe block.
+
+Cypress commands inside test hooks behave as if they were written inside the
+tests, but without any unwanted duplication.
+
+- `before()` runs once, before any test has run
+- `beforeEach()` runs before each test
+- `afterEach()` runs after each test
+- `after()` runs once, after all tests are done running
 
 </Alert>
 
-### Assert secondary behaviors
+In this case, we'll use `beforeEach()` inside our "form tests" describe block to
+do some setup that will be shared across all tests in the block, that will
+behave as if it were written at the top of each test.
+
+If we take a look at our previous test, we can see a few things that will be
+useful for almost every test we need to write:
+
+- We need to mount the component.
+- We need a spy so that we can assert that the `onLogin` function was called.
+- We need to interact with one or more of the Username input, Password input,
+  and Login button elements.
+
+```js
+it('should call onLogin with username and password on login', () => {
+  const onLoginSpy = cy.spy().as('onLoginSpy')
+  mount(<LoginForm onLogin={onLoginSpy} />)
+  cy.contains('Username').find('input').type('testuser123')
+  cy.contains('Password').find('input').type('s3cret')
+  cy.get('button').contains('Login').click()
+  cy.get('@onLoginSpy').should('have.been.calledWith', {
+    username: 'testuser123',
+    password: 's3cret',
+  })
+})
+```
+
+So we'll do the following:
+
+- We'll create a spy, just like before, with the `onLoginSpy` alias.
+- We'll mount the component, just like before, passing in the spy.
+- Instead of querying the DOM for the Username input, Password input, and Login
+  button elements inside every test, we'll just do that once, in the
+  `beforeEach()`, after the component is mounted, and create aliases to those
+  elements for later use.
+- We'll also store `username` and `password` in variables so that we don't have
+  to keep re-entering them.
+
+Using what we've already learned about spies, mounting, and aliases,
+
+```js
+describe('form tests', () => {
+  const username = 'testuser123'
+  const password = 's3cret'
+
+  beforeEach(() => {
+    const onLoginSpy = cy.spy().as('onLoginSpy')
+    mount(<LoginForm onLogin={onLoginSpy} />)
+    cy.contains('Username').find('input').as('usernameInput')
+    cy.contains('Password').find('input').as('passwordInput')
+    cy.get('button').contains('Login').as('loginButton')
+  })
+
+  // tests will go here
+})
+```
 
 - talk about being thorough
 - talk about

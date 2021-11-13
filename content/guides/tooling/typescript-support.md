@@ -127,7 +127,7 @@ cy.visit('/')
 ```
 
 ```ts
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```ts

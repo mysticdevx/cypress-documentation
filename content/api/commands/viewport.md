@@ -139,7 +139,7 @@ cy.visit('https://www.cypress.io')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

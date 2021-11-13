@@ -32,7 +32,7 @@ cy.visit('/my/page/path')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

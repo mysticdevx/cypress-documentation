@@ -27,7 +27,7 @@ cy.visit('/') // opens TodoMVC running at "baseUrl"
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

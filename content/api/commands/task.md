@@ -185,7 +185,7 @@ cy.visit('/')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -260,7 +260,7 @@ cy.visit('https://www.mywebapp.com')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

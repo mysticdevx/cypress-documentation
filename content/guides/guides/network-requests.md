@@ -280,7 +280,7 @@ cy.visit('http://localhost:8888/dashboard')
 ```
 
 ```js
-cy.mount(<Dashboard />)
+mount(<Dashboard />)
 ```
 
 ```js

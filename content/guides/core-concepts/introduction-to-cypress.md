@@ -38,7 +38,7 @@ cy.visit('/posts/new')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -534,7 +534,7 @@ cy.visit('/my/resource/path')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -822,7 +822,7 @@ cy.visit('/my/resource/path')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -1149,7 +1149,7 @@ cy.visit('/home')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

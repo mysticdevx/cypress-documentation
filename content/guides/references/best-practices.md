@@ -421,7 +421,7 @@ cy.visit('/users/new')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -465,7 +465,7 @@ cy.visit('/users/new')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -501,7 +501,7 @@ cy.visit('/users/new')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -558,7 +558,7 @@ cy.visit('/users/new')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -616,7 +616,7 @@ cy.visit('/users/new')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

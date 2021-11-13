@@ -47,7 +47,7 @@ cy.visit('http://localhost:8080/app')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -133,7 +133,7 @@ cy.visit('/')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

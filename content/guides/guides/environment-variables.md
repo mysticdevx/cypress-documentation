@@ -385,7 +385,7 @@ cy.visit(`https://docs.cypress.io/${Cypress.env('language')}/`)
 ```
 
 ```js
-cy.mount(<MyComponent lang={Cypress.env('language')} />)
+mount(<MyComponent lang={Cypress.env('language')} />)
 ```
 
 ```js

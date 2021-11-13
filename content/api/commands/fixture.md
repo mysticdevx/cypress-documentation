@@ -183,7 +183,7 @@ cy.visit('/users')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

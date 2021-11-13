@@ -40,7 +40,7 @@ cy.visit('/')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -282,7 +282,7 @@ cy.visit('/')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -400,7 +400,7 @@ cy.visit('/')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -483,7 +483,7 @@ cy.visit('/')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js

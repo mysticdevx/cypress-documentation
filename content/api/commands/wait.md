@@ -111,7 +111,7 @@ cy.visit('/accounts/123')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
@@ -172,7 +172,7 @@ cy.visit('/dashboard')
 ```
 
 ```js
-cy.mount(<MyComponent />)
+mount(<MyComponent />)
 ```
 
 ```js
